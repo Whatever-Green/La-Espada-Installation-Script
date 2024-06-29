@@ -1,40 +1,46 @@
 @echo off
 setlocal
 
+:: Introductory section
+echo The super cool mod installation script by WG
+echo ====================================================
+echo This script will perform the following actions:
+echo 1. Check if Java is installed on your system.
+echo 2. Install Minecraft Forge if it is not already installed.
+echo 3. Copy mods from the source directory to the Minecraft mods directory.
+echo ====================================================
+echo Disclaimer: I am not responsible for any issues or damages
+echo this script may cause. Use it at your own risk.
+echo ====================================================
+echo.
+
+:: Ask user for confirmation to proceed
+set /p "UserInput=Do you want to proceed with the above actions? (Y/N): "
+if /i "%UserInput%" neq "Y" (
+    echo ====================================================
+    echo Bruh you don't trust me do you. Moderators invert their balls!!!!
+    pause
+    exit /b
+)
+
 :: Variables
 set "FORGE_INSTALLER=installers\forge-1.20.1-47.3.0-installer.jar"
 set "MINECRAFT_DIR=%APPDATA%\.minecraft"
 set "MODS_SOURCE_DIR=.\mods"  :: Change this to the path of your mods folder
 set "MODS_DEST_DIR=%MINECRAFT_DIR%\mods"
-set "JAVA_INSTALLER=jdk-22_windows-x64_bin.exe"  :: Latest Java installer as of writing
-set "JAVA_URL=https://download.oracle.com/java/22/latest/%JAVA_INSTALLER%"
 
 :: Function to check if Java is installed
 :CheckJavaInstalled
 java -version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Java is not installed. Downloading Java...
-    if not exist "%JAVA_INSTALLER%" (
-        echo Downloading Java installer...
-        powershell -Command "(New-Object System.Net.WebClient).DownloadFile('%JAVA_URL%', '%JAVA_INSTALLER%')"
-        if %errorlevel% neq 0 (
-            echo Failed to download Java installer. Please check the URL manually.
-            pause
-            exit /b
-        )
-    )
-
-    :: Prompt user to install Java
-    echo.
-    echo Please install Java by running '%JAVA_INSTALLER%'.
-    echo Once installed, press any key to continue...
+    echo Java is not installed. Please locate the Java installer in the "Installers" Folder.
     pause
-
-    :: Check if Java is installed after manual installation
-    goto :CheckJavaInstalled
+    exit /b
 ) else (
+    echo ====================================================
     echo Java is already installed.
 )
+
 
 :: Check if Forge is already installed
 if not exist "%MINECRAFT_DIR%\libraries\net\minecraftforge\forge" (
@@ -47,17 +53,29 @@ if not exist "%MINECRAFT_DIR%\libraries\net\minecraftforge\forge" (
 
     :: Install Forge
     echo Installing Forge...
-    java -jar "%FORGE_INSTALLER%" --installServer "%MINECRAFT_DIR%"
+    java -jar "%FORGE_INSTALLER%" --installClient "%MINECRAFT_DIR%"
     if %errorlevel% neq 0 (
-        echo Forge installation failed. Please check the Forge installer.
+        echo Forge installation failed. Please check the Forge installer and or Install it manually.
         pause
         exit /b
     )
 ) else (
+    echo ====================================================
     echo Forge is already installed.
+    echo ====================================================
+)
+
+:: Prompt user before copying mods folder
+
+set /p "UserInput=Do you want to proceed with copying the mods folder? (Y/N): "
+if /i "%UserInput%" neq "Y" (
+    echo Operation cancelled by user.
+    pause
+    exit /b
 )
 
 :: Copy mods folder
+echo ====================================================
 echo Copying mods folder...
 if not exist "%MODS_DEST_DIR%" (
     mkdir "%MODS_DEST_DIR%"
@@ -74,6 +92,9 @@ for %%I in ("%MODS_SOURCE_DIR%\*") do (
     )
 )
 
-echo Script completed successfully.
+echo ====================================================
+echo CONGRATS THE INSTALL WAS SUCCESSFUL!!!! 
+echo (c) WG 2024
+echo ====================================================
 pause
 endlocal
