@@ -18,7 +18,7 @@ echo.
 set /p "UserInput=Do you want to proceed with the above actions? (Y/N): "
 if /i "%UserInput%" neq "Y" (
     echo ====================================================
-    echo Bruh you don't trust me do you. Moderators invert their balls!!!!
+    echo Bruh you don't trust me do you. Chat ban this dude!! //EXITING PROGRAM//
     pause
     exit /b
 )
